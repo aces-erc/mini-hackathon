@@ -14,6 +14,7 @@ const connectDB = require("./db/connect");
 //  routers
 const authRouter = require("./routes/auth.routes");
 const productRouter = require("./routes/product.route");
+const customerRouter = require("./routes/customer.routes");
 
 const { authenticateUser } = require("./middlewares/authentication");
 
@@ -31,6 +32,7 @@ app.use(
 
 app.use("/api/auth", authRouter);
 app.use("/api/product", authenticateUser, productRouter);
+app.use("/api/customer", authenticateUser, customerRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
