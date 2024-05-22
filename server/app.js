@@ -12,6 +12,7 @@ const connectDB = require("./db/connect");
 
 //  routers
 const authRouter = require("./routes/auth.routes");
+const productRouter = require("./routes/product.route");
 
 // middleware
 const notFoundMiddleware = require("./middlewares/not-found");
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/api/auth", authRouter);
+app.use("/api/product", productRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
