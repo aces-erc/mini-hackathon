@@ -50,4 +50,40 @@ const createPurchase = async (req, res) => {
   res.status(StatusCodes.OK).json({ msg: "Purchase created successfully." });
 };
 
-module.exports = { createPurchase };
+//for searching the customer in every keystroke
+const searchCustomers = async (req, res) => {
+  const { partialName } = req.body;
+
+  try {
+    const customers = await Customer.find({
+      name: { $regex: partialName, $options: "i" },
+    }).select("name");
+
+    res.status(StatusCodes.OK).json(customers);
+  } catch (error) {
+    console.error("Error searching customers:", error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      msg: "An error occurred while searching customers.",
+    });
+  }
+};
+
+//for searching product in every key stroke
+const searchProducts = async (req, res) => {
+  const { partialName } = req.body;
+
+  try {
+    const products = await Product.find({
+      name: { $regex: partialName, $options: "i" },
+    }).select("name");
+
+    res.status(StatusCodes.OK).json(products);
+  } catch (error) {
+    console.error("Error searching products:", error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      msg: "An error occurred while searching products.",
+    });
+  }
+};
+
+module.exports = { createPurchase, searchCustomers, searchProducts };
