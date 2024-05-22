@@ -43,11 +43,10 @@ const purchaseSchema = new mongoose.Schema({
 const customerSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, "Please provide name"],
+    default: "Random person",
   },
   phone: {
     type: String,
-    required: true,
   },
   purchases: [purchaseSchema],
 });

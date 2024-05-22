@@ -53,6 +53,14 @@ const getTotalOfCustomer = async (req, res) => {
   res.status(StatusCodes.OK).json(amountsWithUser);
 };
 
+
+
+const dueClearance=async(req,res)=>{
+  
+}
+
+
+
 module.exports = {
   createCustomer,
   getAllCustomer,
