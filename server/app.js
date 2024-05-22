@@ -1,6 +1,5 @@
 require("dotenv").config();
 require("express-async-errors");
-// express
 
 const express = require("express");
 const app = express();
@@ -8,17 +7,15 @@ const app = express();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
-// database
 const connectDB = require("./db/connect");
 
-//  routers
 const authRouter = require("./routes/auth.routes");
 const productRouter = require("./routes/product.route");
 const customerRouter = require("./routes/customer.routes");
+const purchaseRouter = require("./routes/purchase.routes");
 
 const { authenticateUser } = require("./middlewares/authentication");
 
-// middleware
 const notFoundMiddleware = require("./middlewares/not-found");
 const errorHandlerMiddleware = require("./middlewares/error-handler");
 
@@ -33,6 +30,7 @@ app.use(
 app.use("/api/auth", authRouter);
 app.use("/api/product", authenticateUser, productRouter);
 app.use("/api/customer", authenticateUser, customerRouter);
+app.use("/api/purchase", authenticateUser, purchaseRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);

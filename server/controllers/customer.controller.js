@@ -25,4 +25,37 @@ const getCustomer = async (req, res) => {
   res.status(StatusCodes.OK).json({ customer });
 };
 
-module.exports = { createCustomer, getAllCustomer, getCustomer };
+//to calculate total due, total paid amount
+const getTotalOfCustomer = async (req, res) => {
+  const customers = await Customer.find();
+
+  const amountsWithUser = [];
+
+  customers.forEach((customer) => {
+    let customerTotalDueAmount = 0;
+    let customerTotalPaidAmount = 0;
+    let customerTotalAmount = 0;
+
+    customer.purchases.forEach((purchase) => {
+      customerTotalDueAmount += purchase.dueAmount;
+      customerTotalPaidAmount += purchase.paidAmount;
+      customerTotalAmount = customerTotalDueAmount + customerTotalPaidAmount;
+    });
+
+    amountsWithUser.push({
+      user: customer.name,
+      totalDueAmount: customerTotalDueAmount,
+      totalPaidAmount: customerTotalPaidAmount,
+      totalAmount: customerTotalAmount,
+    });
+  });
+
+  res.status(StatusCodes.OK).json(amountsWithUser);
+};
+
+module.exports = {
+  createCustomer,
+  getAllCustomer,
+  getCustomer,
+  getTotalOfCustomer,
+};

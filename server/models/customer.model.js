@@ -10,9 +10,16 @@ const purchaseSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  totalAmount: {
+  quantity: {
     type: Number,
     required: true,
+  },
+  totalAmount: {
+    type: Number,
+    get: function () {
+      const price = this.product.price;
+      return price * this.quantity;
+    },
   },
   paidAmount: {
     type: Number,
