@@ -6,6 +6,7 @@ const express = require("express");
 const app = express();
 
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 // database
 const connectDB = require("./db/connect");
@@ -14,15 +15,22 @@ const connectDB = require("./db/connect");
 const authRouter = require("./routes/auth.routes");
 const productRouter = require("./routes/product.route");
 
+const { authenticateUser } = require("./middlewares/authentication");
+
 // middleware
 const notFoundMiddleware = require("./middlewares/not-found");
 const errorHandlerMiddleware = require("./middlewares/error-handler");
 
 app.use(express.json());
 app.use(cors());
+app.use(
+  cookieParser(process.env.jwtSecret, {
+    signed: true,
+  })
+);
 
 app.use("/api/auth", authRouter);
-app.use("/api/product", productRouter);
+app.use("/api/product", authenticateUser, productRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
