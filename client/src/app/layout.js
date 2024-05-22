@@ -2,6 +2,7 @@ import { Roboto } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Navbar } from "@/components";
 
 const roboto = Roboto({
   weight: ["400", "700"],
@@ -18,6 +19,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <body className={roboto.className}>
+        <Navbar />
+        {children}
+        </body>
       <body className={`${roboto.className}`}>
         <ToastContainer autoClose={1000} />
         <main className="min-h-screen flex items-center justify-center p-10">
