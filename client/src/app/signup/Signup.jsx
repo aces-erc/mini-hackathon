@@ -15,19 +15,21 @@ const Signup = () => {
 
   const addUser = async (e) => {
     e.preventDefault();
-    console.log(name, phone, password);
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/register`,
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({ name, phone, password }),
         }
       );
       const result = await response.json();
-      console.log(result);
+
       if (!result.tokenUser) {
-        toast.error("Failed to SignUp");
+        toast.error(result.msg);
       } else {
         toast.success("Signup Successfull");
         router.push("/login");
