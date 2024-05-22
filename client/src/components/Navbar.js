@@ -1,22 +1,19 @@
 'use client';
 import React, { useEffect, useState } from "react";
 import { VscHome } from "react-icons/vsc";
-import { IoSettingsOutline } from "react-icons/io5";
 import { PiHandshakeLight } from "react-icons/pi";
-import { LuContact2 } from "react-icons/lu";
+import { FaMoneyCheckDollar } from "react-icons/fa6";
+import { IoIosLogOut } from "react-icons/io";
 import Link  from "next/link";
+import { BsPeople } from "react-icons/bs";
 import {usePathname} from "next/navigation";
-import { GrGallery } from "react-icons/gr";
 const Navbar = () => {
     
-  const menuName = usePathname;
+  const menuName = usePathname();
    const [nav, setNav] = useState('/');
-
-   useEffect(() => {
-    setNav(menuName);
-  },[menuName])
-  
-  console.log(menuName)
+    useEffect(() => {
+        setNav(menuName);
+    }, [menuName]);
   let headerStyle ='text-sm flex justify-center items-center gap-1 transition-all duration-500  bg-white text-[var(--bg-orange)] rounded-3xl px-3 py-1 group';
  
   return (
@@ -26,16 +23,26 @@ const Navbar = () => {
           <Link href={"/"}  className={nav==="/"?headerStyle:'text-lg'}> <VscHome  size={20} className={nav==="/"?'':'hidden'}  /> Home</Link>
         </li>
         <li>
-          <Link href={"/customers"}  className={nav==="/customers"?headerStyle:'text-lg'}> <GrGallery  size={15}  className={nav==="/customers"?'':'hidden'}/> Customers</Link>
+          <Link href={"/customers"}  className={nav==="/customers"?headerStyle:'text-lg'}> <BsPeople  size={15}  className={nav==="/customers"?'':'hidden'}/> Customers</Link>
         </li>
         <li>
           <Link href={"/sales"}  className={nav==="/sales"?headerStyle:'text-lg'}> <PiHandshakeLight  size={20} className={`${nav==="/sales"?'':'hidden'}`}/> Sales</Link>
         </li>
         <li>
-          <Link href={"/dues"} passHref> <a  className={nav==="/dues"?headerStyle:'text-lg'}><LuContact2 size={20} className={nav==="/dues"?'':'hidden'} /> Dues </a></Link>
+          <Link href={"/dues"}  passHref className={nav==="/dues"?headerStyle:'text-lg'}> <FaMoneyCheckDollar size={20} className={nav==="/dues"?'':'hidden'} /> Dues </Link>
         </li>
+      
       </ul>
-    
+        <div className="px-5 hidden sm:flex">
+      
+            <Link href={"/logout"} className={nav==='/logout'?`${headerStyle} px-4 py-2`:''}>
+              
+              <IoIosLogOut  size={20}/> <span className={nav==="/logout"?'':'hidden'} >
+                Logout
+              </span>
+            </Link>
+         
+        </div>
 
       <div className="w-full sm:hidden flex justify-center fixed bottom-2 z-50">
         <ul className=" w-full mx-2 h-12 flex justify-between px-1 items-center bg-[var(--bg-orange)] rounded-3xl   text-sm text-white">
@@ -54,31 +61,31 @@ const Navbar = () => {
             </Link>
           </li>
           <li>
-            <Link href={"/gallery"} className={nav==="/gallery"?`${headerStyle} px-4 py-2`:''}>
+            <Link href={"/customers"} className={nav==="/customers"?`${headerStyle} px-4 py-2`:''}>
           
-              <GrGallery /> <span className={nav==="/gallery"?"":'hidden'}>Gallery</span>
+              <BsPeople /> <span className={nav==="/customers"?"":'hidden'}>Customers</span>
             </Link>
           </li>
           <li>
-            <Link href={"/deals"} className={nav==="/deals"?`${headerStyle} px-4 py-2`:''}>
+            <Link href={"/sales"} className={nav==="/sales"?`${headerStyle} px-4 py-2`:''}>
               
               <PiHandshakeLight size={20} />
-              <span className={nav==="/deals"?'':'hidden'}>Deals</span>
+              <span className={nav==="/sales"?'':'hidden'}>Sales</span>
             </Link>
           </li>
           <li>
-            <Link href={"/contact"} className={nav==='/contact'?`${headerStyle} px-4 py-2`:''}>
+            <Link href={"/dues"} className={nav==='/dues'?`${headerStyle} px-4 py-2`:''}>
               
-              <LuContact2 size={20} /> <span className={nav==="/contact"?'':'hidden'} >
-                Contact
+              <FaMoneyCheckDollar size={20} /> <span className={nav==="/dues"?'':'hidden'} >
+                Dues
               </span>
             </Link>
           </li> 
           <li>
-            <Link href={"/settings"} className={nav==='/settings'?`${headerStyle} px-4 py-2`:''}>
+            <Link href={"/logout"} className={nav==='/logout'?`${headerStyle} px-4 py-2`:''}>
               
-              <IoSettingsOutline  size={20}/> <span className={nav==="/settings"?'':'hidden'} >
-                Settings
+              <IoIosLogOut  size={20}/> <span className={nav==="/logout"?'':'hidden'} >
+                Logout
               </span>
             </Link>
           </li>
