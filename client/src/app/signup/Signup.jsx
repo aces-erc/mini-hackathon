@@ -3,12 +3,39 @@ import { FaRegEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa6";
 import { useState } from "react";
 import Link from "next/link";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const router = useRouter();
+
+  const addUser = async (e) => {
+    e.preventDefault();
+    console.log(name, phone, password);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/register`,
+        {
+          method: "POST",
+          body: JSON.stringify({ name, phone, password }),
+        }
+      );
+      const result = await response.json();
+      console.log(result);
+      if (!result.tokenUser) {
+        toast.error("Failed to SignUp");
+      } else {
+        toast.success("Signup Successfull");
+        router.push("/login");
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -19,7 +46,7 @@ const Signup = () => {
         <h2 className="text-2xl font-bold mb-6 text-center text-white">
           Create an Account
         </h2>
-        <form action="#" method="POST" className="space-y-4">
+        <form action="#" method="POST" className="space-y-4" onSubmit={addUser}>
           <div>
             <label htmlFor="name" className="block text-gray-200">
               Name
