@@ -10,10 +10,12 @@ import { GrGallery } from "react-icons/gr";
 const Navbar = () => {
     
   const menuName = usePathname;
-   const [nav, setNav] = useState('/')
+   const [nav, setNav] = useState('/');
+
    useEffect(() => {
     setNav(menuName);
   },[menuName])
+  
   console.log(menuName)
   let headerStyle ='text-sm flex justify-center items-center gap-1 transition-all duration-500  bg-white text-[var(--bg-orange)] rounded-3xl px-3 py-1 group';
  
