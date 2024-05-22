@@ -14,7 +14,7 @@ const Navbar = () => {
     useEffect(() => {
         setNav(menuName);
     }, [menuName]);
-  let headerStyle ='text-sm flex justify-center items-center gap-1 transition-all duration-500  bg-white text-[var(--bg-orange)] rounded-3xl px-3 py-1 group';
+  let headerStyle ='text-sm flex justify-center items-center gap-1 transition-all duration-500  bg-white text-[var(--bg-orange)] rounded-3xl px-3 py-1 group py-2';
  
   return (
     <div className="w-full min-h-[55px] flex  justify-between transition-all duration-500 items-center  z-10 bg-[var(--bg-orange)] text-[var(--text-color)]">
@@ -35,7 +35,7 @@ const Navbar = () => {
       </ul>
         <div className="px-5 hidden sm:flex">
       
-            <Link href={"/logout"} className={nav==='/logout'?`${headerStyle} px-4 py-2`:''}>
+            <Link href={"/logout"} passHref className={nav==='/logout'?`${headerStyle} px-4 py-2`:''}>
               
               <IoIosLogOut  size={20}/> <span className={nav==="/logout"?'':'hidden'} >
                 Logout
@@ -47,7 +47,7 @@ const Navbar = () => {
       <div className="w-full sm:hidden flex justify-center fixed bottom-2 z-50">
         <ul className=" w-full mx-2 h-12 flex justify-between px-1 items-center bg-[var(--bg-orange)] rounded-3xl   text-sm text-white">
           <li>
-            <Link
+            <Link passHref
               href={"/"}
               className={nav==="/"?`${headerStyle} px-4 py-2`:''}
             >
@@ -67,14 +67,14 @@ const Navbar = () => {
             </Link>
           </li>
           <li>
-            <Link href={"/sales"} className={nav==="/sales"?`${headerStyle} px-4 py-2`:''}>
+            <Link href={"/sales"} passHref className={nav==="/sales"?`${headerStyle} px-4 py-2`:''}>
               
               <PiHandshakeLight size={20} />
               <span className={nav==="/sales"?'':'hidden'}>Sales</span>
             </Link>
           </li>
           <li>
-            <Link href={"/dues"} className={nav==='/dues'?`${headerStyle} px-4 py-2`:''}>
+            <Link href={"/dues"} passHref className={nav==='/dues'?`${headerStyle} px-4 py-2`:''}>
               
               <FaMoneyCheckDollar size={20} /> <span className={nav==="/dues"?'':'hidden'} >
                 Dues

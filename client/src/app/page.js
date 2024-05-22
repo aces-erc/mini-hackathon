@@ -1,7 +1,9 @@
-export default function Home() {
+import { Home } from "@/components";
+
+export default function Main() {
   return (
     <div>
-      <h1>this is home</h1>
+      <Home />
     </div>
   );
 }
