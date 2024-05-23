@@ -25,12 +25,6 @@ const createPurchase = async (req, res) => {
       .json({ msg: "Product not found. Please add product." });
   }
 
-  if (typeof paidAmount !== "number" || typeof quantity !== "number") {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ msg: "Invalid input data. Please provide valid numbers." });
-  }
-
   const totalAmount = product.price * quantity;
 
   if (paidAmount > totalAmount) {
@@ -51,7 +45,7 @@ const createPurchase = async (req, res) => {
 
   await customer.save();
 
-  res.status(StatusCodes.OK).json({ msg: "Purchase created successfully." });
+  res.status(StatusCodes.OK).json({ newPurchase });
 };
 
 const searchCustomers = async (req, res) => {
