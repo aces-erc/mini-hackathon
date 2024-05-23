@@ -44,6 +44,7 @@ const getTotalOfCustomer = async (req, res) => {
 
     amountsWithUser.push({
       user: customer.name,
+      phone: customer.phone,
       totalDueAmount: customerTotalDueAmount,
       totalPaidAmount: customerTotalPaidAmount,
       totalAmount: customerTotalAmount,
