@@ -9,7 +9,29 @@ const createCustomer = async (req, res) => {
 
 const getAllCustomer = async (req, res) => {
   const customers = await Customer.find({});
-  res.status(StatusCodes.OK).json({ customers });
+
+  const customersWithPaymentInfo = customers.map((customer) => {
+    let customerTotalDueAmount = 0;
+    let customerTotalPaidAmount = 0;
+
+    customer.purchases.forEach((purchase) => {
+      customerTotalDueAmount += purchase.dueAmount;
+      customerTotalPaidAmount += purchase.paidAmount;
+    });
+
+    const totalAmount = customerTotalDueAmount + customerTotalPaidAmount;
+
+    return {
+      _id: customer._id,
+      name: customer.name,
+      phone: customer.phone,
+      totalAmount: totalAmount,
+      totalDueAmount: customerTotalDueAmount,
+      totalPaidAmount: customerTotalPaidAmount,
+    };
+  });
+
+  res.status(StatusCodes.OK).json({ customers: customersWithPaymentInfo });
 };
 
 const getCustomer = async (req, res) => {

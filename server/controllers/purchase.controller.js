@@ -94,9 +94,64 @@ const totalSalesOfDay = async (req, res) => {
   res.status(StatusCodes.OK).json({ totalSales, totalPaid, totalDue });
 };
 
+const salesToday = async (req, res) => {
+  const currentDate = new Date();
+  const startTime = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    currentDate.getDate(),
+    0,
+    0,
+    0
+  );
+  const endTime = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    currentDate.getDate(),
+    12,
+    0,
+    0
+  );
+
+  const customers = await Customer.find({})
+    .select("name purchases")
+    .populate({
+      path: "purchases",
+      match: { dateBought: { $gte: startTime, $lt: endTime } },
+      select: "product quantity totalAmount paidAmount dueAmount",
+      populate: { path: "product", select: "name price" },
+    });
+
+  const formattedResponse = customers.map((customer) => {
+    const totalPaid = customer.purchases.reduce(
+      (total, purchase) => total + purchase.paidAmount,
+      0
+    );
+    const totalDueRemaining = customer.purchases.reduce(
+      (total, purchase) => total + purchase.dueAmount,
+      0
+    );
+
+    return {
+      name: customer.name,
+      totalPaid: totalPaid,
+      totalDueRemaining: totalDueRemaining,
+      purchases: customer.purchases.map((purchase) => ({
+        productName: purchase.product.name,
+        price: purchase.product.price,
+        quantity: purchase.quantity,
+        total: purchase.totalAmount,
+      })),
+    };
+  });
+
+  res.json({ customers: formattedResponse });
+};
+
 module.exports = {
   createPurchase,
   searchCustomers,
   searchProducts,
   totalSalesOfDay,
+  salesToday,
 };
