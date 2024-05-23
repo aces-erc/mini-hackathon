@@ -20,7 +20,7 @@ const Navbar = () => {
     <div className="w-full min-h-[55px] flex  justify-between transition-all duration-500 items-center  z-10 bg-[var(--bg-orange)] text-[var(--text-color)]">
       <ul className="hidden sm:flex sm:justify-center items-center px-4 py-1 drop-shadow-lg text-white text-lg  ">
         <li>
-          <Link href={"/"}  className={nav==="/"?headerStyle:'text-lg'}> <VscHome  size={20} className={nav==="/"?'':'hidden'}  /> Home</Link>
+          <Link href={"/home"}  className={nav==="/home"?headerStyle:'text-lg'}> <VscHome  size={20} className={nav==="/home"?'':'hidden'}  /> Home</Link>
         </li>
         <li>
           <Link href={"/customers"}  className={nav==="/customers"?headerStyle:'text-lg'}> <BsPeople  size={15}  className={nav==="/customers"?'':'hidden'}/> Customers</Link>
