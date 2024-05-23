@@ -15,35 +15,29 @@ const Signup = () => {
 
   const addUser = async (e) => {
     e.preventDefault();
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/register`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name, phone, password }),
+    fetch("http://localhost:8080/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, phone, password }),
+    })
+      .then(async (data) => {
+        const response = await data.json();
+        if (!data.ok) {
+          toast.error(response.message);
+          return;
         }
-      );
-      const result = await response.json();
-
-      if (!result.tokenUser) {
-        toast.error(result.msg);
-      } else {
-        toast.success("Signup Successfull");
         router.push("/login");
-      }
-    } catch (error) {
-      throw new Error(error.message);
-    }
+      })
+      .catch((err) => {
+        toast.error("Failed to signup");
+      });
   };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
   return (
-    <div className="flex items-center justify-center  ">
+    <div className="flex items-center justify-center my-10 sm:my-30  ">
       <div className="bg-primary p-8 rounded-lg shadow-lg max-w-md w-full">
         <h2 className="text-2xl font-bold mb-6 text-center text-white">
           Create an Account

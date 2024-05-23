@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link'
 import { useEffect, useState } from 'react';
+import TodaySells from './TodaySells';
 const Home = () => {
   const cardDesign ="flex flex-col justify-center w-full sm:w-64 px-4 py-2 rounded-lg  border drop-shadow-md hover:drop-shadow-lg cursor-pointer duration-200";
   const linkBtn ="bg-[var(--bg-orange)] px-3 py-2 rounded-lg text-center text-white hover:drop-shadow-lg duration-100 hover:-tracking-tight sm:w-44"
@@ -35,7 +36,9 @@ const Home = () => {
           
 
         </div>
-       
+        <div className="my-5 md:py-6 md:px-96 flex  sm:flex-row justify-center gap-4 ">
+          <TodaySells />
+           </div>
          </div>
       </div>
   )

@@ -12,19 +12,22 @@ const Customers = () => {
         }})
         .then( async(data) => {
             const response = await data.json();
-            console.log(response);
-            setDueData([{
-                name: response.user,
-                totalDue: response.totalDueAmount,
-                totalPaidAmount: response.totalPaidAmount,
-                totalAmount: response.totalAmount
-            
-            }]);
+            let temp = [];
+            response.map((data) => (
+                temp.push({
+                    name: data.user,
+                    totalDueAmount: data.totalDueAmount,
+                    totalPaidAmount: data.totalPaidAmount,
+                    totalAmount: data.totalAmount
+                })
+            ))
+            console.log(temp);
+            setDueData(temp);
         })
         .catch(err => console.log(err))
     }, [])
     
-    let headings = ['Users', 'Total Due Amount', 'Total Paid Amount', 'Total Amount']
+    let headings = ['Users', 'Total Due Amount', 'Total Paid Amount', 'Total Amount', 'Action']
   return (
     <div className='max-w[1640px] m-auto px-4 py-6 sm:px-12'>
         <div className="container mx-auto">

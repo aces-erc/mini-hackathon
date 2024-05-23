@@ -1,10 +1,9 @@
-import { Add, AddCustomer } from "@/components"
+import React from 'react'
 
 const page = () => {
-   
   return (
     <div>
-      <AddCustomer />
+      Hello
     </div>
   )
 }

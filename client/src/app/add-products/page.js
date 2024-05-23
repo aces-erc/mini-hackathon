@@ -1,9 +1,10 @@
 import { Add } from "@/components"
+import AddProduct from "@/components/AddProduct"
 
 const page = () => {
   return (
     <div>
-     <Add title="Product Name" identity="Product's Price" btn="Add Product" />
+     <AddProduct />
     </div>
    
   )

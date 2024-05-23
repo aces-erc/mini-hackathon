@@ -12,45 +12,36 @@ const Login = () => {
   const [phone, setPhone] = useState("");
   const router = useRouter();
 
-  const loginUser = async (e) => {
+  const loginUser =  (e) => {
     e.preventDefault();
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ phone, password }),
+    fetch("http://localhost:8080/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone, password }),
+    })
+      .then(async (data) => {
+        const response = await data.json();
+        if (!data.ok) {
+          toast.error(response.message);
+          return;
         }
-      );
-      const result = await response.json();
-      console.log(result);
-      if (!result.tokenUser) {
-        toast.error(result.msg);
-      } else {
-        toast.success("Login Successfull");
-        router.push("/home");
-      }
-    } catch (error) {
-      throw new Error(error.message);
-    }
+       router.push("/home");
+      })
+      .catch((err) => {
+        toast.error("Failed to login");
+      });
   };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
   return (
-    <div className="flex items-center justify-center  ">
+    <div className="flex items-center justify-center my-10 sm:my-30  ">
       <div className="bg-primary p-8 rounded-lg shadow-lg max-w-md w-full">
         <h2 className="text-2xl font-bold mb-6 text-center text-white">
           Login
         </h2>
         <form
-          action="#"
-          method="POST"
-          className="space-y-4"
           onSubmit={loginUser}
         >
           <div>
@@ -93,15 +84,15 @@ const Login = () => {
           </div>
           <button
             type="submit"
-            className="w-full py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full py-2 my-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             Login
           </button>
         </form>
         <div className="flex items-center mt-2">
-          <h1 className="text-white">
+          <h1 className="text-white flex justify-center items-center gap-4 pt-4 mx-5">
             Don't have an account?
-            <Link href={"/signup"} className="underline">
+            <Link href={"/signup"} className="hover:underline text-orange-500">
               signup
             </Link>
           </h1>
