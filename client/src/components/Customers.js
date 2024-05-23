@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 const Customers = () => {
     const [dueData, setDueData] = useState('')
     useEffect(() => {   
-        fetch('http://localhost:3000/api/customer/amount',{
+        fetch('http://localhost:8080/api/customer/amount',{
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json', 
