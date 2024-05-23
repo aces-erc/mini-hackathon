@@ -26,7 +26,7 @@ const getCustomer = async (req, res) => {
 };
 
 //to calculate total due, total paid amount
-const getTotalOfCustomer = async (req, res) => {
+const payementInfo = async (req, res) => {
   const customers = await Customer.find();
 
   const amountsWithUser = [];
@@ -52,18 +52,33 @@ const getTotalOfCustomer = async (req, res) => {
 
   res.status(StatusCodes.OK).json(amountsWithUser);
 };
+const dueClearance = async (req, res) => {
+  const { userId, payment } = req.body;
+  const customer = await Customer.findById(userId);
 
+  if (!customer) {
+    return CustomError.BadRequestError("User not found");
+  }
 
+  for (const purchase of customer.purchases) {
+    const remainingDue = purchase.dueAmount - payment;
+    purchase.dueAmount = Math.max(0, remainingDue);
+  }
 
-const dueClearance=async(req,res)=>{
-  
-}
+  customer.totalDue = customer.purchases.reduce(
+    (total, purchase) => total + purchase.dueAmount,
+    0
+  );
 
+  await customer.save();
 
+  res.status(StatusCodes.OK).json({ dueRemaining: customer.totalDue });
+};
 
 module.exports = {
   createCustomer,
   getAllCustomer,
   getCustomer,
-  getTotalOfCustomer,
+  payementInfo,
+  dueClearance,
 };

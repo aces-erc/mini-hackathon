@@ -24,7 +24,6 @@ const createPurchase = async (req, res) => {
       .json({ msg: "Product not found. Please add product." });
   }
 
-  // Validate input data
   if (typeof paidAmount !== "number" || typeof quantity !== "number") {
     return res
       .status(StatusCodes.BAD_REQUEST)
@@ -32,6 +31,10 @@ const createPurchase = async (req, res) => {
   }
 
   const totalAmount = product.price * quantity;
+
+  if (paidAmount > totalAmount) {
+    throw new CustomError.BadRequestError("Cannot pay more than total amount");
+  }
 
   const dueAmount = totalAmount - paidAmount;
 
@@ -50,40 +53,20 @@ const createPurchase = async (req, res) => {
   res.status(StatusCodes.OK).json({ msg: "Purchase created successfully." });
 };
 
-//for searching the customer in every keystroke
 const searchCustomers = async (req, res) => {
-  const { partialName } = req.body;
-
-  try {
-    const customers = await Customer.find({
-      name: { $regex: partialName, $options: "i" },
-    }).select("name");
-
-    res.status(StatusCodes.OK).json(customers);
-  } catch (error) {
-    console.error("Error searching customers:", error);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      msg: "An error occurred while searching customers.",
-    });
+  const customers = await Customer.find({});
+  if (!customers) {
+    throw new CustomError.NotFoundError("Users not found");
   }
+  res.status(StatusCodes.OK).json({ customers });
 };
 
-//for searching product in every key stroke
 const searchProducts = async (req, res) => {
-  const { partialName } = req.body;
-
-  try {
-    const products = await Product.find({
-      name: { $regex: partialName, $options: "i" },
-    }).select("name");
-
-    res.status(StatusCodes.OK).json(products);
-  } catch (error) {
-    console.error("Error searching products:", error);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      msg: "An error occurred while searching products.",
-    });
+  const products = await Customer.find({});
+  if (!products) {
+    throw new CustomError.NotFoundError("Users not found");
   }
+  res.status(StatusCodes.OK).json({ products });
 };
 
 module.exports = { createPurchase, searchCustomers, searchProducts };
