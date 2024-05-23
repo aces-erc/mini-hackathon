@@ -3,17 +3,39 @@ const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 
 const createCustomer = async (req, res) => {
-  const { name, phone } = req.body;
-  if (!name || !phone) {
-    throw new CustomError.BadRequestError("Provide all credentials");
-  }
   const customer = await Customer.create(req.body);
   res.status(StatusCodes.OK).json({ customer });
 };
 
 const getAllCustomer = async (req, res) => {
   const customers = await Customer.find({});
-  res.status(StatusCodes.OK).json({ customers });
+
+  const customersWithPaymentInfo = customers.map((customer) => {
+    let customerTotalDueAmount = 0;
+    let customerTotalPaidAmount = 0;
+
+    customer.purchases.forEach((purchase) => {
+      customerTotalDueAmount += purchase.dueAmount;
+      customerTotalPaidAmount += purchase.paidAmount;
+    });
+
+    const totalAmount = customerTotalDueAmount + customerTotalPaidAmount;
+
+    return {
+      _id: customer._id,
+      name: customer.name,
+      phone: customer.phone,
+      totalAmount: totalAmount,
+      totalDueAmount: customerTotalDueAmount,
+      totalPaidAmount: customerTotalPaidAmount,
+    };
+  });
+
+  const sortedCustomers = customersWithPaymentInfo.sort(
+    (a, b) => b.totalDueAmount - a.totalDueAmount
+  );
+
+  res.status(StatusCodes.OK).json({ customers: sortedCustomers });
 };
 
 const getCustomer = async (req, res) => {
