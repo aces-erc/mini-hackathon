@@ -2,12 +2,41 @@
 import { FaRegEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa6";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
+  const router = useRouter();
+
+  const loginUser = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ phone, password }),
+        }
+      );
+      const result = await response.json();
+      console.log(result);
+      if (!result.tokenUser) {
+        toast.error(result.msg);
+      } else {
+        toast.success("Login Successfull");
+        router.push("/home");
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -18,7 +47,12 @@ const Login = () => {
         <h2 className="text-2xl font-bold mb-6 text-center text-white">
           Login
         </h2>
-        <form action="#" method="POST" className="space-y-4">
+        <form
+          action="#"
+          method="POST"
+          className="space-y-4"
+          onSubmit={loginUser}
+        >
           <div>
             <label htmlFor="phone" className="block text-gray-200">
               Phone

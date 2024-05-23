@@ -1,7 +1,9 @@
-export default function Home() {
+
+export default function Main() {
   return (
     <div>
-      <h1>this is home</h1>
+      <h1>this is landing page</h1>
+
     </div>
   );
 }
