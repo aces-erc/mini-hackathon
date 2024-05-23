@@ -6,7 +6,7 @@ const CustomError = require("../errors");
 
 const createPurchase = async (req, res) => {
   const { customerName, productName, paidAmount, quantity } = req.body;
-
+      
   const customer = await Customer.findOne({
     name: { $regex: customerName, $options: "i" },
   });
@@ -24,7 +24,6 @@ const createPurchase = async (req, res) => {
       .status(StatusCodes.NOT_FOUND)
       .json({ msg: "Product not found. Please add product." });
   }
-
   const totalAmount = product.price * quantity;
 
   if (paidAmount > totalAmount) {
@@ -62,6 +61,7 @@ const searchProducts = async (req, res) => {
     throw new CustomError.NotFoundError("Users not found");
   }
   res.status(StatusCodes.OK).json({ products });
+
 };
 
 const totalSalesOfDay = async (req, res) => {
