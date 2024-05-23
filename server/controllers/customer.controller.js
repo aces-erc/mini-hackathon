@@ -34,24 +34,26 @@ const payementInfo = async (req, res) => {
   customers.forEach((customer) => {
     let customerTotalDueAmount = 0;
     let customerTotalPaidAmount = 0;
-    let customerTotalAmount = 0;
 
     customer.purchases.forEach((purchase) => {
       customerTotalDueAmount += purchase.dueAmount;
       customerTotalPaidAmount += purchase.paidAmount;
-      customerTotalAmount = customerTotalDueAmount + customerTotalPaidAmount;
     });
 
-    amountsWithUser.push({
-      user: customer.name,
-      totalDueAmount: customerTotalDueAmount,
-      totalPaidAmount: customerTotalPaidAmount,
-      totalAmount: customerTotalAmount,
-    });
+    const totalAmount = customerTotalDueAmount + customerTotalPaidAmount;
+
+    if (customerTotalDueAmount > 0) {
+      amountsWithUser.push({
+        user: customer.name,
+        totalDueAmount: customerTotalDueAmount,
+        totalPaidAmount: customerTotalPaidAmount,
+        totalAmount: totalAmount,
+      });
+    }
   });
-
   res.status(StatusCodes.OK).json(amountsWithUser);
 };
+
 const dueClearance = async (req, res) => {
   const { userId, payment } = req.body;
   const customer = await Customer.findById(userId);
