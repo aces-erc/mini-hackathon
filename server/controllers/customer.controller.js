@@ -39,14 +39,6 @@ const payementInfo = async (req, res) => {
       customerTotalDueAmount += purchase.dueAmount;
       customerTotalPaidAmount += purchase.paidAmount;
     });
-
-    amountsWithUser.push({
-      user: customer.name,
-      phone: customer.phone,
-      totalDueAmount: customerTotalDueAmount,
-      totalPaidAmount: customerTotalPaidAmount,
-      totalAmount: customerTotalAmount,
-    });
     const totalAmount = customerTotalDueAmount + customerTotalPaidAmount;
 
     if (customerTotalDueAmount > 0) {

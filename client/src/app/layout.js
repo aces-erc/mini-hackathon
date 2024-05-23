@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Navbar } from "@/components";
 
+
 const roboto = Roboto({
   weight: ["400", "700"],
   style: ["normal", "italic"],
@@ -19,7 +20,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-    
+   
       <body className={`${roboto.className}`}>
         <ToastContainer autoClose={1000} />
         <main className="min-h-screen">
