@@ -8,7 +8,7 @@ const {
 } = require("../controllers/purchase.controller");
 
 router.post("/", createPurchase);
-router.post("/find-customer", searchCustomers);
-router.post("/find-products", searchProducts);
+router.get("/find-customer", searchCustomers);
+router.get("/find-products", searchProducts);
 
 module.exports = router;

@@ -1,5 +1,6 @@
 'use client';
 const Addtransactions = () => {
+    let customerData = [];
     const addTransaction = (e) => {
         e.preventDefault();
         const partialName = document.getElementById('name').value;
@@ -10,7 +11,7 @@ const Addtransactions = () => {
             alert('Please fill all the fields');
         }
         const formData = {partialName, product, amount, quantity};
-        fetch('http://localhost:3000/api/purchase/find-customer', {
+        fetch('http://localhost:8080/api/purchase/find-customer', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

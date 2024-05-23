@@ -18,7 +18,7 @@ const Home = () => {
         </div>
         ) )}
          </div>
-        <div className="my-5 md:py-6 md:px-96 flex flex-col sm:flex-row justify-center gap-4 ">
+        <div className="my-5 md:py-6 md:px-96 flex  sm:flex-row justify-center gap-4 ">
           <Link href="/add-customers" passHref className={linkBtn}> Add Customers </Link>
           <Link href="/add-products" passHref className={linkBtn}> Add Products </Link>
           <Link href="/add-transactions" passHref className={linkBtn}> Add Transactions </Link>
