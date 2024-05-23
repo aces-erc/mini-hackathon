@@ -7,15 +7,30 @@ import { IoIosLogOut } from "react-icons/io";
 import Link  from "next/link";
 import { BsPeople } from "react-icons/bs";
 import {usePathname} from "next/navigation";
+import { useRouter } from 'next/navigation'
+import { toast } from "react-toastify";
+ 
 const Navbar = () => {
-    
+  const router = useRouter()
+ 
   const menuName = usePathname();
    const [nav, setNav] = useState('/');
     useEffect(() => {
         setNav(menuName);
     }, [menuName]);
   let headerStyle ='text-sm flex justify-center items-center gap-1 transition-all duration-500  bg-white text-[var(--bg-orange)] rounded-3xl px-3 py-1 group py-2';
- 
+ const logOut=()=>{
+      fetch("http://localhost:8080/api/auth/logout")
+      .then(async(res) => {
+        const data = await res.json();
+        if(!res.ok){
+          const error = (data && data.message) || res.statusText;
+          return Promise.reject(error);
+        }
+        router.push('/login');
+        toast.success('Logged out successfully');
+      })
+ }
   return (
     <div className="w-full min-h-[55px] flex  justify-between transition-all duration-500 items-center  z-10 bg-[var(--bg-orange)] text-[var(--text-color)]">
       <ul className="hidden sm:flex sm:justify-center items-center px-4 py-1 drop-shadow-lg text-white text-lg  ">
@@ -35,12 +50,10 @@ const Navbar = () => {
       </ul>
         <div className="px-5 hidden sm:flex">
       
-            <Link href={"/logout"} passHref className={nav==='/logout'?`${headerStyle} px-4 py-2`:''}>
+            <button onClick={logOut} className={`${headerStyle} px-4 py-2`}>
               
-              <IoIosLogOut  size={20}/> <span className={nav==="/logout"?'':'hidden'} >
-                Logout
-              </span>
-            </Link>
+              <IoIosLogOut  size={20}/> 
+            </button>
          
         </div>
 
@@ -82,12 +95,12 @@ const Navbar = () => {
             </Link>
           </li> 
           <li>
-            <Link href={"/logout"} className={nav==='/logout'?`${headerStyle} px-4 py-2`:''}>
+            <button onClick={logOut} className={headerStyle}>
               
-              <IoIosLogOut  size={20}/> <span className={nav==="/logout"?'':'hidden'} >
+              <IoIosLogOut  size={20}/> <span>
                 Logout
               </span>
-            </Link>
+            </button>
           </li>
         </ul>
       </div>

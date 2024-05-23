@@ -29,8 +29,13 @@ app.use(
 
 app.use("/api/auth", authRouter);
 app.use("/api/product", productRouter);
+<<<<<<< HEAD
 app.use("/api/customer",  customerRouter);
 app.use("/api/purchase",  purchaseRouter);
+=======
+app.use("/api/customer", customerRouter);
+app.use("/api/purchase", purchaseRouter);
+>>>>>>> 499eb51a06a3b43493ca9b27d20454473a443ec3
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);

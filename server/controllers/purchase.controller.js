@@ -10,11 +10,9 @@ const createPurchase = async (req, res) => {
   const customer = await Customer.findOne({
     name: { $regex: customerName, $options: "i" },
   });
-  if (!customer) {
-    return res
-      .status(StatusCodes.NOT_FOUND)
-      .json({ msg: "Customer not found. Please add customer." });
-  }
+  // if (!customerName) {
+  //   customerName = "random";
+  // }
 
   const product = await Product.findOne({
     name: { $regex: productName, $options: "i" },
@@ -44,7 +42,7 @@ const createPurchase = async (req, res) => {
 
   await customer.save();
 
-  res.status(StatusCodes.OK).json({ newPurchase });
+  res.status(StatusCodes.OK).json({ newPurchase, customerName });
 };
 
 const searchCustomers = async (req, res) => {
@@ -65,27 +63,27 @@ const searchProducts = async (req, res) => {
 };
 
 const totalSalesOfDay = async (req, res) => {
-  const startOfDay = moment().startOf("day"); // Get start of the current day (12:00 am)
-  const endOfDay = moment().endOf("day"); // Get end of the current day (11:59 pm)
+  const startOfDay = moment().startOf("day");
+  const endOfDay = moment().endOf("day");
 
   const sales = await Customer.aggregate([
     {
-      $unwind: "$purchases", // Unwind the purchases array
+      $unwind: "$purchases",
     },
     {
       $match: {
         "purchases.dateBought": {
-          $gte: startOfDay.toDate(), // Filter purchases made after the start of the day
-          $lte: endOfDay.toDate(), // Filter purchases made before the end of the day
+          $gte: startOfDay.toDate(),
+          $lte: endOfDay.toDate(),
         },
       },
     },
     {
       $group: {
         _id: null,
-        totalSales: { $sum: "$purchases.totalAmount" }, // Calculate the total sales for the day
-        totalPaid: { $sum: "$purchases.paidAmount" }, // Calculate the total paid amount for the day
-        totalDue: { $sum: "$purchases.dueAmount" }, // Calculate the total due amount for the day
+        totalSales: { $sum: "$purchases.totalAmount" },
+        totalPaid: { $sum: "$purchases.paidAmount" },
+        totalDue: { $sum: "$purchases.dueAmount" },
       },
     },
   ]);
@@ -96,9 +94,64 @@ const totalSalesOfDay = async (req, res) => {
   res.status(StatusCodes.OK).json({ totalSales, totalPaid, totalDue });
 };
 
+const salesToday = async (req, res) => {
+  const currentDate = new Date();
+  const startTime = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    currentDate.getDate(),
+    0,
+    0,
+    0
+  );
+  const endTime = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    currentDate.getDate(),
+    12,
+    0,
+    0
+  );
+
+  const customers = await Customer.find({})
+    .select("name purchases")
+    .populate({
+      path: "purchases",
+      match: { dateBought: { $gte: startTime, $lt: endTime } },
+      select: "product quantity totalAmount paidAmount dueAmount",
+      populate: { path: "product", select: "name price" },
+    });
+
+  const formattedResponse = customers.map((customer) => {
+    const totalPaid = customer.purchases.reduce(
+      (total, purchase) => total + purchase.paidAmount,
+      0
+    );
+    const totalDueRemaining = customer.purchases.reduce(
+      (total, purchase) => total + purchase.dueAmount,
+      0
+    );
+
+    return {
+      name: customer.name,
+      totalPaid: totalPaid,
+      totalDueRemaining: totalDueRemaining,
+      purchases: customer.purchases.map((purchase) => ({
+        productName: purchase.product.name,
+        price: purchase.product.price,
+        quantity: purchase.quantity,
+        total: purchase.totalAmount,
+      })),
+    };
+  });
+
+  res.json({ customers: formattedResponse });
+};
+
 module.exports = {
   createPurchase,
   searchCustomers,
   searchProducts,
   totalSalesOfDay,
+  salesToday,
 };

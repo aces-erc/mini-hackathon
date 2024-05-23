@@ -44,7 +44,7 @@ const customerSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      default: "Random person",
+      default: "Random",
     },
     phone: {
       type: String,

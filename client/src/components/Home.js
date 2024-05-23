@@ -1,12 +1,22 @@
+'use client';
 import Link from 'next/link'
+import { useEffect, useState } from 'react';
 const Home = () => {
   const cardDesign ="flex flex-col justify-center w-full sm:w-64 px-4 py-2 rounded-lg  border drop-shadow-md hover:drop-shadow-lg cursor-pointer duration-200";
   const linkBtn ="bg-[var(--bg-orange)] px-3 py-2 rounded-lg text-center text-white hover:drop-shadow-lg duration-100 hover:-tracking-tight sm:w-44"
-  const sellsData = [
-    {id:1, title:"Today's Sell", amount:"$200000"},
-    {id:2, title:"Today's Due", amount:"$2000"},
-    {id:3, title:"Today's Payment", amount:"$200"},
-  ]
+  const [sellsData, setSellsData] = useState([]);
+  useEffect(() => {
+    fetch("http://localhost:8080/api/purchase/total-sales")
+    .then(async(res) => {
+      const data = await res.json();
+      
+      if(!res.ok){
+        const error = (data && data.message) || res.statusText;
+        return Promise.reject(error);
+      }
+     setSellsData([...sellsData, {id:1, title:"Today's Sell", amount:data.totalSales},{id:2, title:"Today's Dues", amount:data.totalDue},{id:3, title:"Today's Paid", amount:data.totalPaid}])
+    })
+  }, [])
   return (
     <div className="max-w-[1640px] m-auto px-4 sm:px-20 py-5 my-5">
       <div className=" duration-200 ">
