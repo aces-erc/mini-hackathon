@@ -28,9 +28,9 @@ app.use(
 );
 
 app.use("/api/auth", authRouter);
-app.use("/api/product", authenticateUser, productRouter);
-app.use("/api/customer", authenticateUser, customerRouter);
-app.use("/api/purchase", authenticateUser, purchaseRouter);
+app.use("/api/product", productRouter);
+app.use("/api/customer", customerRouter);
+app.use("/api/purchase", purchaseRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);

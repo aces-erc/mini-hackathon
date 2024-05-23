@@ -3,10 +3,6 @@ const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 
 const createCustomer = async (req, res) => {
-  const { name, phone } = req.body;
-  if (!name || !phone) {
-    throw new CustomError.BadRequestError("Provide all credentials");
-  }
   const customer = await Customer.create(req.body);
   res.status(StatusCodes.OK).json({ customer });
 };
