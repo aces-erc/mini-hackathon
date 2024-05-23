@@ -21,4 +21,12 @@ const authenticateUser = async (req, res, next) => {
   }
 };
 
+//   const authorizePermission = async (req, res, next) => {
+//     //for admins only
+//     if (req.user.role !== "admin") {
+//       throw new customError.UnauthenticatedError("Only admins can access it");
+//     }
+//     next();
+//   };
+
 module.exports = { authenticateUser };

@@ -11,6 +11,7 @@ const UserSchema = new mongoose.Schema({
 
   phone: {
     type: String,
+    type: Number,
     required: [true, ["Please provide phone number"]],
   },
 
@@ -21,6 +22,8 @@ const UserSchema = new mongoose.Schema({
 });
 
 UserSchema.pre("save", async function () {
+  // console.log(this.modifiedPaths()); //kun modify vayo user update garda
+  // console.log(this.isModified('name'));
   if (!this.isModified("password")) return;
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);

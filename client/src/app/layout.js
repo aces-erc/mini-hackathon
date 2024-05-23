@@ -1,8 +1,15 @@
-import { Inter } from "next/font/google";
+import { Roboto } from "next/font/google";
 import "./globals.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Navbar } from "@/components";
 
-const inter = Inter({ subsets: ["latin"] });
+const roboto = Roboto({
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const metadata = {
   title: "Create Next App",
@@ -12,10 +19,16 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={roboto.className}>
         <Navbar />
         {children}
         </body>
+      <body className={`${roboto.className}`}>
+        <ToastContainer autoClose={1000} />
+        <main className="min-h-screen flex items-center justify-center p-10">
+          {children}v
+        </main>
+      </body>
     </html>
   );
 }

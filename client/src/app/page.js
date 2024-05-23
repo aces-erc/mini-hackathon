@@ -4,6 +4,9 @@ export default function Main() {
   return (
     <div>
       <Home />
+
+      <h1>this is landing page</h1>
+
     </div>
   );
 }
