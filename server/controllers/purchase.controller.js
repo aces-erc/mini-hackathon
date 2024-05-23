@@ -1,6 +1,7 @@
 const Customer = require("../models/customer.model");
 const Product = require("../models/product.model");
 const { StatusCodes } = require("http-status-codes");
+const moment = require("moment");
 const CustomError = require("../errors");
 
 const createPurchase = async (req, res) => {
@@ -24,12 +25,6 @@ const createPurchase = async (req, res) => {
       .json({ msg: "Product not found. Please add product." });
   }
 
-  if (typeof paidAmount !== "number" || typeof quantity !== "number") {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ msg: "Invalid input data. Please provide valid numbers." });
-  }
-
   const totalAmount = product.price * quantity;
 
   if (paidAmount > totalAmount) {
@@ -50,7 +45,7 @@ const createPurchase = async (req, res) => {
 
   await customer.save();
 
-  res.status(StatusCodes.OK).json({ msg: "Purchase created successfully." });
+  res.status(StatusCodes.OK).json({ newPurchase });
 };
 
 const searchCustomers = async (req, res) => {
@@ -69,4 +64,41 @@ const searchProducts = async (req, res) => {
   res.status(StatusCodes.OK).json({ products });
 };
 
-module.exports = { createPurchase, searchCustomers, searchProducts };
+const totalSalesOfDay = async (req, res) => {
+  const startOfDay = moment().startOf("day"); // Get start of the current day (12:00 am)
+  const endOfDay = moment().endOf("day"); // Get end of the current day (11:59 pm)
+
+  const sales = await Customer.aggregate([
+    {
+      $unwind: "$purchases", // Unwind the purchases array
+    },
+    {
+      $match: {
+        "purchases.dateBought": {
+          $gte: startOfDay.toDate(), // Filter purchases made after the start of the day
+          $lte: endOfDay.toDate(), // Filter purchases made before the end of the day
+        },
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        totalSales: { $sum: "$purchases.totalAmount" }, // Calculate the total sales for the day
+        totalPaid: { $sum: "$purchases.paidAmount" }, // Calculate the total paid amount for the day
+        totalDue: { $sum: "$purchases.dueAmount" }, // Calculate the total due amount for the day
+      },
+    },
+  ]);
+
+  const { totalSales, totalPaid, totalDue } =
+    sales.length > 0 ? sales[0] : { totalSales: 0, totalPaid: 0, totalDue: 0 };
+
+  res.status(StatusCodes.OK).json({ totalSales, totalPaid, totalDue });
+};
+
+module.exports = {
+  createPurchase,
+  searchCustomers,
+  searchProducts,
+  totalSalesOfDay,
+};
