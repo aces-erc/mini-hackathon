@@ -19,14 +19,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={roboto.className}>
-        <Navbar />
-        {children}
-        </body>
+    
       <body className={`${roboto.className}`}>
         <ToastContainer autoClose={1000} />
-        <main className="min-h-screen flex items-center justify-center p-10">
-          {children}v
+        <main className="min-h-screen">
+        <Navbar />
+          {children}
         </main>
       </body>
     </html>

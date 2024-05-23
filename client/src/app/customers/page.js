@@ -5,7 +5,7 @@ const page = () => {
   return (
     <div>
      <Customers />
-    </div>
+   </div>
   );
 };
 

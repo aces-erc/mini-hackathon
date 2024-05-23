@@ -16,6 +16,7 @@ const customerRouter = require("./routes/customer.routes");
 const purchaseRouter = require("./routes/purchase.routes");
 
 const { authenticateUser } = require("./middlewares/authentication");
+
 const notFoundMiddleware = require("./middlewares/not-found");
 const errorHandlerMiddleware = require("./middlewares/error-handler");
 
