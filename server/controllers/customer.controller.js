@@ -31,7 +31,11 @@ const getAllCustomer = async (req, res) => {
     };
   });
 
-  res.status(StatusCodes.OK).json({ customers: customersWithPaymentInfo });
+  const sortedCustomers = customersWithPaymentInfo.sort(
+    (a, b) => b.totalDueAmount - a.totalDueAmount
+  );
+
+  res.status(StatusCodes.OK).json({ customers: sortedCustomers });
 };
 
 const getCustomer = async (req, res) => {
