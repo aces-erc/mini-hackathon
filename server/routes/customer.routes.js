@@ -5,11 +5,13 @@ const {
   createCustomer,
   getCustomer,
   getAllCustomer,
-  getTotalOfCustomer,
+  payementInfo,
+  dueClearance,
 } = require("../controllers/customer.controller");
 
 router.post("/", createCustomer);
-router.get("/amount", getTotalOfCustomer);
+router.post("/clear-due", dueClearance);
+router.get("/amount", payementInfo);
 router.get("/:id", getCustomer);
 router.get("/", getAllCustomer);
 

@@ -26,7 +26,7 @@ const getCustomer = async (req, res) => {
 };
 
 //to calculate total due, total paid amount
-const getTotalOfCustomer = async (req, res) => {
+const payementInfo = async (req, res) => {
   const customers = await Customer.find();
 
   const amountsWithUser = [];
@@ -34,12 +34,10 @@ const getTotalOfCustomer = async (req, res) => {
   customers.forEach((customer) => {
     let customerTotalDueAmount = 0;
     let customerTotalPaidAmount = 0;
-    let customerTotalAmount = 0;
 
     customer.purchases.forEach((purchase) => {
       customerTotalDueAmount += purchase.dueAmount;
       customerTotalPaidAmount += purchase.paidAmount;
-      customerTotalAmount = customerTotalDueAmount + customerTotalPaidAmount;
     });
 
     amountsWithUser.push({
@@ -49,22 +47,47 @@ const getTotalOfCustomer = async (req, res) => {
       totalPaidAmount: customerTotalPaidAmount,
       totalAmount: customerTotalAmount,
     });
-  });
+    const totalAmount = customerTotalDueAmount + customerTotalPaidAmount;
 
+    if (customerTotalDueAmount > 0) {
+      amountsWithUser.push({
+        user: customer.name,
+        totalDueAmount: customerTotalDueAmount,
+        totalPaidAmount: customerTotalPaidAmount,
+        totalAmount: totalAmount,
+      });
+    }
+  });
   res.status(StatusCodes.OK).json(amountsWithUser);
 };
 
+const dueClearance = async (req, res) => {
+  const { userId, payment } = req.body;
+  const customer = await Customer.findById(userId);
 
+  if (!customer) {
+    return CustomError.BadRequestError("User not found");
+  }
 
-const dueClearance=async(req,res)=>{
-  
-}
+  for (const purchase of customer.purchases) {
+    const remainingDue = purchase.dueAmount - payment;
+    purchase.dueAmount = Math.max(0, remainingDue);
+  }
 
+  customer.totalDue = customer.purchases.reduce(
+    (total, purchase) => total + purchase.dueAmount,
+    0
+  );
 
+  await customer.save();
+
+  res.status(StatusCodes.OK).json({ dueRemaining: customer.totalDue });
+};
 
 module.exports = {
   createCustomer,
   getAllCustomer,
   getCustomer,
-  getTotalOfCustomer,
+  payementInfo,
+  dueClearance,
 };

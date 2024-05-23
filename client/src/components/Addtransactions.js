@@ -1,58 +1,152 @@
 'use client';
 
-import { useEffect } from "react";
-
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { ReactSearchAutocomplete } from 'react-search-autocomplete'
 const Addtransactions = () => {
-    // const addTransaction = (e) => {
-    //     e.preventDefault();
-    //     const partialName = document.getElementById('name').value;
-    //     const product = document.getElementById('product').value;
-    //     const amount = document.getElementById('amount').value;
-    //     const quantity = document.getElementById('quantity').value;
-    //     if (partialName === '' || product === '' || amount === '' || quantity === '') {
-    //         alert('Please fill all the fields');
-    //     }
-    //     const formData = {partialName, product, amount, quantity};
-    //     fetch('http://localhost:8080/api/purchase/find-customer', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify(formData)
-    //     }).then((response) => response.json()).then((data) => console.log(data)
-    //     ).catch((error) => alert(error.msg)
-
-    //     )
-
-    // }
-    useEffect(() => {
-        fetch('http://localhost:8080/api/purchase/find-customer', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response) => response.json()).then((data) => console.log(data)
-        ).catch((error) => alert(error.msg)
-
-        )
-    }, [])
+    const [customerData, setCustomerData] = useState([]);
+    const [productData, setProductData] = useState([]);
+    const [formData, setFormData] = useState({
+        customerName: '',
+        productName: '',
+        quantity: '',
+        paidAmount: 0,
+    });
     
+    const addTransaction = (e) => {
+        e.preventDefault();
+       fetch('http://localhost:8080/api/purchase', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(formData),
+         })
+            .then(async (res) => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                const data = await res.json();
+                console.log('Data received from API:', data);
+                alert('Transaction added successfully');
+            })
+            .catch((error) => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    }
+    const reactComponet ={
+        height: "40px",
+        borderRadius: "8px",
+        backgroundColor: "white",
+        color: "#212529",
+        placeholderColor: "rgb(184, 188, 194)",
+        padding: "2px -8px",
+        zIndex: 20,
+    }
+    useEffect(() => {
+        fetch('http://localhost:8080/api/purchase/find-customer')
+    .then(async (res) => {
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const data = await res.json();
+       
+
+        if (Array.isArray(data.customers)) {
+            const formattedData = data.customers.map((customer) => ({
+                id: customer.id,
+                name: customer.name,
+            }));
+            setCustomerData(formattedData);
+        } else {
+            console.error('Expected an array in the "customers" property but received:', data.customers);
+        }
+    })
+    .catch((error) => {
+        console.error('There was a problem with the fetch operation:', error);
+    });
+    fetch('http://localhost:8080/api/product')
+    .then(async (res) => {
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const data = await res.json();
+        console.log('Data received from API:', data);
+
+        if (Array.isArray(data.products)) {
+            const formattedData = data.products.map((product,i) => ({
+                id: i,
+                name: product.name,
+            }));
+            setProductData(formattedData);
+        } else {
+            console.error('Expected an array in the "customers" property but received:', data.customers);
+        }
+    })
+    .catch((error) => {
+        console.error('There was a problem with the fetch operation:', error);
+    });
+      
+    }, [])  
+    const formatResult = (item) => {
+        return (
+          <>
+        
+            <span style={{ display: 'block', textAlign: 'left' }}>{item.name}</span>
+          </>
+        )
+      }
+      const handleSelectName = (item) => {
+        setFormData({...formData, customerName: item.name});
+      }
+      const handleSelectProduct = (item) => {
+        setFormData({...formData, productName: item.name});
+      }
+      console.log(formData);
   return (
     <div>
         <div>
+            {productData && console.log(productData)}
             <h1 className='text-sm font-semibold opacity-85 text-gray-700 '>Add Your All Transactions</h1>
             <div className=' border px-4 py-2 w-full sm:w-fit my-4 sm:ml-4'>
-            <div className='flex flex-col gap-2 w-full sm:w-96 '>
+               
+            <form onSubmit={addTransaction} className='flex flex-col gap-2 w-full sm:w-96 '>
                 <label htmlFor="name">Customer's Name:</label>
-                <input type="text" id="name" placeholder="Name" className='border p-2 rounded-lg' required />
+                <ReactSearchAutocomplete
+                    items={customerData}
+                    showIcon={false}
+                    autoFocus
+                    placeholder="Customer Name"
+                    formatResult={formatResult}
+                    styling={reactComponet}
+                   onSelect={handleSelectName}
+          />
                 <label htmlFor="date">Product's Name:</label>
-                <input type="text" id="product" placeholder="product" className='border p-2  rounded-lg' required />
-                <label htmlFor="amount">Amount</label>
-                <input type="number" id="amount" placeholder="Amount" className='border p-2  rounded-lg' required />
+                <ReactSearchAutocomplete
+                    items={productData}
+                    showIcon={false}
+                    autoFocus
+                    placeholder="Product Name"
+                    formatResult={formatResult}
+                    styling={{
+                     height: "40px",
+                    borderRadius: "8px",
+                    backgroundColor: "white",
+                    color: "#212529",
+                    placeholderColor: "rgb(184, 188, 194)",
+                    padding: "2px -8px",
+                    zIndex: 10,}}
+                    onSelect={handleSelectProduct}
+                    
+          />
+                
                 <label htmlFor="description">Qauntity:</label>
-                <input type="number" id="quantity" placeholder="Quantity" className='border  p-2 rounded-lg' required />
-                <button  className='bg-[var(--bg-orange)] text-white px-3 py-2 mt-2 rounded-lg hover:drop-shadow-lg duration-100'>Add Transaction</button>
-                </div>
+                <input type="number" onChange={(e)=>setFormData({...formData,quantity:e.target.value})} id="quantity" placeholder="Quantity..." className='border hover:drop-shadow-lg  p-2 rounded-lg' required />
+                <label htmlFor="description">Payment:</label>
+                <input type="number" onChange={(e)=>setFormData({...formData,paidAmount:e.target.value})} id="payment" placeholder="Payment..." className='border hover:drop-shadow-lg  p-2 rounded-lg' min={0} defaultValue={0} />
+                <button type="submit" className='bg-[var(--bg-orange)] text-white px-3 py-2 my-2 rounded-lg hover:drop-shadow-lg duration-100'>Add Transaction</button>
+                <Link href='/add-customers' passHref className=" text-sm text-center "> <span className=" hover:underline py-4 font-semibold hover:text-[var(--bg-orange)] ">Add Customer</span></Link>
+                </form>
                 </div>
         </div>
     </div>

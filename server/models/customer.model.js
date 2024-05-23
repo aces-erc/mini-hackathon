@@ -40,15 +40,25 @@ const purchaseSchema = new mongoose.Schema({
   },
 });
 
-const customerSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    default: "Random person",
+const customerSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      default: "Random person",
+    },
+    phone: {
+      type: String,
+    },
+    purchases: [purchaseSchema],
   },
-  phone: {
-    type: String,
-  },
-  purchases: [purchaseSchema],
+  { toJSON: { virtuals: true } }
+);
+
+customerSchema.virtual("totalDue").get(function () {
+  return this.purchases.reduce(
+    (total, purchase) => total + purchase.dueAmount,
+    0
+  );
 });
 
 module.exports = mongoose.model("Customer", customerSchema);
